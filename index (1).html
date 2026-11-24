@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Simulatore raccolta olive · Break-even point</title>
+  <style>
+    :root{--bg:#f6f7f2;--card:#ffffff;--ink:#1b2921;--muted:#68766e;--border:#e1e8df;--dark:#183d2c;--green:#197e56;--greenlight:#e5f3e9;--amber:#ba7a28;--negative:#b43b32;--shadow:0 8px 30px rgba(33,65,44,.055)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Arial,sans-serif}button,input{font:inherit}button{cursor:pointer}
+    .wrap{max-width:1180px;margin:0 auto;padding:32px 22px 56px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:8px}h1{font-size:clamp(26px,4vw,39px);line-height:1.13;letter-spacing:-.045em;margin:0 0 10px}p{margin:0}.subtitle{color:var(--muted);max-width:700px;font-size:14px}.reset{border:1px solid #cddbd1;background:white;border-radius:11px;padding:10px 15px;color:var(--dark);font-weight:700;white-space:nowrap}.reset:hover{background:#eaf3ec}
+    .sectionhead{display:flex;align-items:center;gap:8px;margin:22px 0 11px;color:#607366;font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.sectionhead .line{height:1px;flex:1;background:#dce4dd}
+    .controls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.controls.sales-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.control{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:16px 17px;box-shadow:var(--shadow);min-width:0}.control.sales{border-color:#9dc7ac;background:#fcfefd}.controltop{display:flex;gap:7px;justify-content:space-between;align-items:center;margin-bottom:18px}.controltop label{font-weight:650;font-size:14px}.controltop .unit{font-size:11px;color:var(--muted)}.value-row{display:flex;align-items:center;gap:5px;justify-content:space-between}.value-row input[type=number]{min-width:0;width:110px;background:#f7f9f6;border:1px solid #e0e8e1;padding:7px 8px;border-radius:9px;text-align:right;font-size:20px;font-weight:750;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}.value-row .suffix{font-size:14px;color:var(--muted);font-weight:600;white-space:nowrap}.control input[type=range]{width:100%;margin:13px 0 2px;accent-color:var(--green);cursor:pointer}.range-labels{display:flex;justify-content:space-between;font-size:11px;color:#87928a}.assumptions{margin:14px 0 22px;color:var(--muted);font-size:12px;display:flex;gap:12px;flex-wrap:wrap}.assumptions strong{color:var(--dark)}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.kpi{background:white;border:1px solid var(--border);border-radius:15px;padding:17px;box-shadow:var(--shadow);min-width:0}.kpi.feature{background:var(--dark);color:white}.kpi .label{font-size:12px;color:var(--muted);font-weight:650}.kpi.feature .label{color:#c5d9cb}.kpi .num{font-size:clamp(23px,2.6vw,31px);font-weight:800;letter-spacing:-.055em;line-height:1.2;margin:12px 0 7px;white-space:nowrap;font-variant-numeric:tabular-nums}.kpi .hint{font-size:11px;color:#839087}.kpi.feature .hint{color:#d0dfd4}.kpi.feature.negative{background:#7e332d}
+    .twocol{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.9fr);gap:13px;margin-top:14px}.panel{border:1px solid var(--border);background:#fff;border-radius:16px;padding:21px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:18px;letter-spacing:-.025em;margin:0 0 7px}.panel .desc{font-size:12px;color:var(--muted)}.chart{width:100%;height:auto;display:block;margin-top:10px;overflow:visible}.legend{display:flex;gap:17px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:12px;margin-top:5px}.key{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:6px}.key.revenue{background:#197e56}.key.cost{background:#bc832d}.key.break{background:#1a3c2c}.key.actual{background:#fff;border:2px solid #1a3c2c}.status{font-size:12px;background:#f2f7f2;border-radius:10px;padding:10px 12px;margin-top:13px;color:var(--dark)}.status.warn{background:#fff4e7;color:#7b4e1e}
+    .statrow{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:10px 0;border-bottom:1px solid #edf0ec;font-size:13px}.statrow:last-child{border:0}.statrow span{color:var(--muted)}.statrow strong{white-space:nowrap;font-variant-numeric:tabular-nums}.badge{display:inline-flex;background:#e8f3eb;color:#176743;font-size:11px;font-weight:700;padding:4px 7px;border-radius:6px}.meter{height:11px;border-radius:30px;background:#e7ece6;overflow:hidden;margin:13px 0 7px}.meter>div{background:#28875c;height:100%;width:0%;transition:width .15s ease}.panelblock{margin-top:16px;padding-top:15px;border-top:1px solid var(--border)}.small{font-size:12px;color:var(--muted)}.foot{color:#87928a;font-size:11px;line-height:1.6;margin-top:20px}
+    @media(max-width:1050px){.controls{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:900px){.controls,.controls.sales-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.twocol{grid-template-columns:1fr}}@media(max-width:540px){.wrap{padding:23px 13px 40px}.top{flex-wrap:wrap}.controls,.controls.sales-controls{grid-template-columns:1fr}.kpi-grid{gap:9px}.kpi{padding:12px}.kpi .num{font-size:23px}.panel{padding:16px}.reset{width:100%}}
+    @media print{body{background:#fff}.wrap{padding:0}.controls,.top button{display:none}.panel,.kpi{box-shadow:none}.twocol{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div><div class="eyebrow">Simulatore economico · olivicoltura</div><h1>Dalla raccolta all'utile.</h1><p class="subtitle">Modifica produzione e vendite. Il grafico mostra il <strong>Break-even point</strong>: i litri da vendere per coprire tutti i costi.</p></div>
+    <button class="reset" type="button" id="reset">↺ &nbsp;Ripristina scenario</button>
+  </header>
+  <div class="sectionhead">Produzione <span class="line"></span></div>
+  <section class="controls" aria-label="Parametri di produzione">
+    <div class="control"><div class="controltop"><label for="plantsNum">Numero di piante</label><span class="unit">piante</span></div><div class="value-row"><input type="number" id="plantsNum" min="1" max="250" step="1" inputmode="numeric"><span class="suffix">piante</span></div><input type="range" id="plantsRange" min="1" max="250" step="1"><div class="range-labels"><span>1</span><span>250</span></div></div>
+    <div class="control"><div class="controltop"><label for="laborNum">Manodopera</label><span class="unit">€/pianta</span></div><div class="value-row"><input type="number" id="laborNum" min="0" max="25" step="0.5" inputmode="decimal"><span class="suffix">€/pianta</span></div><input type="range" id="laborRange" min="0" max="25" step="0.5"><div class="range-labels"><span>0 €</span><span>25 €</span></div></div>
+    <div class="control"><div class="controltop"><label for="harvestNum">Raccolta media per pianta</label><span class="unit">kg/pianta</span></div><div class="value-row"><input type="number" id="harvestNum" min="0" max="50" step="0.5" inputmode="decimal"><span class="suffix">kg</span></div><input type="range" id="harvestRange" min="0" max="50" step="0.5"><div class="range-labels"><span>0 kg</span><span>50 kg</span></div></div>
+    <div class="control"><div class="controltop"><label for="yieldNum">Resa in olio</label><span class="unit">L/q</span></div><div class="value-row"><input type="number" id="yieldNum" min="0" max="30" step="0.5" inputmode="decimal"><span class="suffix">L/q</span></div><input type="range" id="yieldRange" min="0" max="30" step="0.5"><div class="range-labels"><span>0 L/q</span><span>30 L/q</span></div></div>
+    <div class="control"><div class="controltop"><label for="millNum">Costo frantoio</label><span class="unit">€/q</span></div><div class="value-row"><input type="number" id="millNum" min="0" max="40" step="0.5" inputmode="decimal"><span class="suffix">€/q</span></div><input type="range" id="millRange" min="0" max="40" step="0.5"><div class="range-labels"><span>0 €</span><span>40 €</span></div></div>
+  </section>
+  <div class="sectionhead">Vendita <span class="line"></span></div>
+  <section class="controls sales-controls" aria-label="Parametri di vendita">
+    <div class="control sales"><div class="controltop"><label for="soldNum">Litri di olio venduti</label><span class="unit">litri</span></div><div class="value-row"><input type="number" id="soldNum" min="0" step="0.01" inputmode="decimal"><span class="suffix">L</span></div><input type="range" id="soldRange" min="0" step="0.01"><div class="range-labels"><span>0 L</span><span id="soldMax">22,50 L disponibili</span></div></div>
+    <div class="control sales"><div class="controltop"><label for="priceNum">Prezzo di vendita</label><span class="unit">€/litro</span></div><div class="value-row"><input type="number" id="priceNum" min="0" max="30" step="0.5" inputmode="decimal"><span class="suffix">€/L</span></div><input type="range" id="priceRange" min="0" max="30" step="0.5"><div class="range-labels"><span>0 €</span><span>30 €</span></div></div>
+  </section>
+  <div class="assumptions"><span>⚙ Costo frantoio calcolato sui quintali raccolti</span><span>•</span><span>I litri venduti non possono superare quelli prodotti</span></div>
+  <section class="kpi-grid" aria-label="Risultati della simulazione">
+    <div class="kpi feature" id="profitCard"><div class="label" id="profitLabel">Utile netto stimato</div><div class="num" id="profit">37,50 €</div><div class="hint" id="margin">Margine 16,7%</div></div>
+    <div class="kpi"><div class="label">Ricavi dalle vendite</div><div class="num" id="revenue">225,00 €</div><div class="hint">Solo olio effettivamente venduto</div></div>
+    <div class="kpi"><div class="label">Costi totali</div><div class="num" id="costs">187,50 €</div><div class="hint">Manodopera + frantoio</div></div>
+    <div class="kpi"><div class="label">Olio prodotto</div><div class="num" id="produced">22,50 L</div><div class="hint" id="oliveQ">1,25 quintali di olive</div></div>
+  </section>
+  <div class="twocol">
+    <section class="panel">
+      <h2>Break-even point <span class="badge" id="breakBadge">Raggiungibile</span></h2>
+      <p class="desc">L'incrocio tra ricavi e costi indica quanta produzione devi vendere per andare in pareggio. Il cerchio vuoto indica le vendite impostate.</p>
+      <svg id="bepChart" class="chart" viewBox="0 0 760 318" role="img" aria-label="Grafico ricavi e costi in funzione dei litri venduti, con punto di pareggio" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="legend"><span><i class="key revenue"></i>Ricavi</span><span><i class="key cost"></i>Costi totali</span><span><i class="key break"></i>Punto di pareggio</span><span><i class="key actual"></i>Vendite impostate</span></div>
+      <div class="status" id="bepStatus" role="status">Vendendo 18,75 litri raggiungi il pareggio.</div>
+    </section>
+    <aside class="panel">
+      <h2>Dettaglio della simulazione</h2>
+      <div class="statrow"><span>Olive raccolte</span><strong id="olives">125,00 kg</strong></div>
+      <div class="statrow"><span>Olio venduto</span><strong id="soldText">22,50 L</strong></div>
+      <div class="statrow"><span>Olio invenduto</span><strong id="unsold">0,00 L</strong></div>
+      <div class="statrow"><span>Costo manodopera</span><strong id="laborCost">175,00 €</strong></div>
+      <div class="statrow"><span>Costo frantoio</span><strong id="millCost">12,50 €</strong></div>
+      <div class="panelblock">
+        <div class="small">Produzione venduta</div><div class="meter" aria-hidden="true"><div id="salesMeter"></div></div>
+        <div class="statrow"><span>Percentuale venduta</span><strong id="salesPct">100,0%</strong></div>
+        <div class="statrow"><span>Litri per il pareggio</span><strong id="bepLiters">18,75 L</strong></div>
+        <div class="statrow"><span>Prezzo minimo di pareggio*</span><strong id="minimumPrice">8,33 €/L</strong></div>
+      </div>
+      <p class="small" style="margin-top:14px">* Prezzo necessario a coprire i costi con i litri attualmente venduti.</p>
+    </aside>
+  </div>
+  <p class="foot">Modello di simulazione basato sui parametri inseriti, non su dati consuntivi. Costi di confezionamento, trasporto, attrezzature, imposte e altri oneri non inclusi. Il file funziona offline e non invia informazioni a servizi esterni.</p>
+</main>
+<script>
+(() => {
+  'use strict';
+  const initial = {plants:25,labor:7,harvest:5,yield:18,mill:10,sold:22.5,price:10};
+  const state={...initial};
+  const limits={plants:[1,250,1],labor:[0,25,.5],harvest:[0,50,.5],yield:[0,30,.5],mill:[0,40,.5],sold:[0,100000,.01],price:[0,30,.5]};
+  const el=id=>document.getElementById(id);
+  const nf=(n,d=2)=>Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const eur=n=>`${nf(n)} €`;
+  const clamp=(n,min,max)=>Math.min(max,Math.max(min,Number.isFinite(n)?n:min));
+  const keys=Object.keys(initial);
+  function model(){
+    const kg=state.plants*state.harvest, q=kg/100, produced=q*state.yield;
+    state.sold=clamp(state.sold,0,produced);
+    const laborCost=state.plants*state.labor, millCost=q*state.mill, costs=laborCost+millCost;
+    const revenue=state.sold*state.price, profit=revenue-costs;
+    const bep=state.price>0?costs/state.price:(costs===0?0:Infinity);
+    const minPrice=state.sold>0?costs/state.sold:(costs===0?0:Infinity);
+    return {kg,q,produced,laborCost,millCost,costs,revenue,profit,bep,minPrice,unsold:produced-state.sold};
+  }
+  function setText(id,value){el(id).textContent=value;}
+  function updateControls(m){
+    const upper=Math.max(0,m.produced);
+    el('soldRange').max=String(upper);
+    el('soldNum').max=String(upper);
+    el('soldRange').disabled=upper===0;
+    el('soldNum').disabled=upper===0;
+    setText('soldMax',`${nf(upper)} L disponibili`);
+    for(const key of keys){
+      el(key+'Range').value=String(state[key]);
+      el(key+'Num').value=String(Number(state[key].toFixed(key==='sold'?2:3)));
+    }
+  }
+  function drawChart(m){
+    const svg=el('bepChart'),W=760,H=318,L=71,R=21,T=19,B=51;
+    const pw=W-L-R,ph=H-T-B;
+    const xMax=Math.max(1,m.produced),yMax=Math.max(1,m.costs,m.produced*state.price)*1.12;
+    const x=v=>L+clamp(v,0,xMax)/xMax*pw;
+    const y=v=>T+ph-(v/yMax)*ph;
+    let html='';
+    for(let i=0;i<=4;i++){
+      const val=yMax*i/4,py=y(val);
+      html+=`<line x1="${L}" y1="${py}" x2="${W-R}" y2="${py}" stroke="#e8ece7" stroke-width="1"/>`;
+      html+=`<text x="${L-10}" y="${py+4}" text-anchor="end" font-size="12" fill="#75847b">${nf(val,0)} €</text>`;
+    }
+    for(let i=0;i<=4;i++){
+      const val=m.produced*i/4,px=x(val);
+      html+=`<text x="${px}" y="${H-19}" text-anchor="middle" font-size="12" fill="#75847b">${nf(val,1)}</text>`;
+    }
+    html+=`<text x="${L+pw/2}" y="${H-1}" text-anchor="middle" font-size="12" font-weight="600" fill="#68766e">Litri di olio venduti</text>`;
+    html+=`<line x1="${L}" y1="${y(m.costs)}" x2="${x(m.produced)}" y2="${y(m.costs)}" stroke="#bc832d" stroke-width="3.4" stroke-linecap="round"/>`;
+    html+=`<line x1="${L}" y1="${y(0)}" x2="${x(m.produced)}" y2="${y(m.produced*state.price)}" stroke="#197e56" stroke-width="3.4" stroke-linecap="round"/>`;
+    const currentX=x(state.sold),currentY=y(m.revenue);
+    html+=`<line x1="${currentX}" y1="${y(0)}" x2="${currentX}" y2="${currentY}" stroke="#6b8173" stroke-dasharray="4 5" stroke-width="1.5"/>`;
+    html+=`<circle cx="${currentX}" cy="${currentY}" r="6.5" fill="white" stroke="#193f2b" stroke-width="3"/>`;
+    const possible=Number.isFinite(m.bep)&&m.bep<=m.produced&&m.produced>0;
+    if(possible){
+      const bx=x(m.bep),by=y(m.costs);
+      html+=`<line x1="${bx}" y1="${by}" x2="${bx}" y2="${y(0)}" stroke="#193f2b" stroke-width="1.5" stroke-dasharray="5 4" opacity=".8"/>`;
+      html+=`<circle cx="${bx}" cy="${by}" r="6" fill="#193f2b" stroke="white" stroke-width="2"/>`;
+      const ty=Math.max(12,by-14);
+      const anchor=bx>L+pw*.68?'end':'start';
+      const tx=anchor==='end'?bx-11:bx+11;
+      html+=`<text x="${tx}" y="${ty}" font-size="13" font-weight="750" text-anchor="${anchor}" fill="#193f2b">BEP ${nf(m.bep,2)} L</text>`;
+    }
+    svg.innerHTML=html;
+  }
+  function render(){
+    const m=model();updateControls(m);
+    setText('profit',eur(m.profit));setText('profitLabel',m.profit>=0?'Utile netto stimato':'Perdita netta stimata');
+    setText('margin',m.revenue>0?`Margine sui ricavi: ${nf(m.profit/m.revenue*100,1)}%`:'Margine non calcolabile');
+    el('profitCard').classList.toggle('negative',m.profit<0);
+    setText('revenue',eur(m.revenue));setText('costs',eur(m.costs));setText('produced',`${nf(m.produced)} L`);
+    setText('oliveQ',`${nf(m.q)} quintali di olive`);setText('olives',`${nf(m.kg)} kg`);
+    setText('soldText',`${nf(state.sold)} L`);setText('unsold',`${nf(m.unsold)} L`);
+    setText('laborCost',eur(m.laborCost));setText('millCost',eur(m.millCost));
+    const ratio=m.produced>0?state.sold/m.produced:0;
+    setText('salesPct',`${nf(ratio*100,1)}%`);el('salesMeter').style.width=`${ratio*100}%`;
+    setText('bepLiters',Number.isFinite(m.bep)?`${nf(m.bep)} L`:'Non raggiungibile');
+    setText('minimumPrice',Number.isFinite(m.minPrice)?`${eur(m.minPrice)}/L`:'Non calcolabile');
+    const reachable=Number.isFinite(m.bep)&&m.bep<=m.produced;
+    const badge=el('breakBadge'),status=el('bepStatus');
+    setText('breakBadge',reachable?'Raggiungibile':'Non raggiungibile');
+    badge.style.background=reachable?'#e8f3eb':'#fff0dc';badge.style.color=reachable?'#176743':'#925a15';
+    status.classList.toggle('warn',!reachable);
+    if(reachable){
+      setText('bepStatus',`Punto di pareggio: ${nf(m.bep)} L venduti a ${eur(state.price)}/L. ${state.sold>=m.bep?'Le vendite attuali coprono i costi.':`Servono altri ${nf(m.bep-state.sold)} L di vendite per raggiungerlo.`}`);
+    }else{
+      setText('bepStatus',`Con questa produzione (${nf(m.produced)} L) e al prezzo impostato, le vendite non possono coprire tutti i costi.`);
+    }
+    drawChart(m);
+  }
+  for(const key of keys){
+    el(key+'Range').addEventListener('input',ev=>{state[key]=Number(ev.target.value);render()});
+    el(key+'Num').addEventListener('change',ev=>{
+      const m=model(),max=key==='sold'?m.produced:limits[key][1];
+      const val=Number(ev.target.value.replace?.(',','.')??ev.target.value);
+      state[key]=clamp(val,limits[key][0],max);render();
+    });
+  }
+  el('reset').addEventListener('click',()=>{Object.assign(state,initial);render()});
+  render();
+})();
+</script>
+</body>
+</html>
